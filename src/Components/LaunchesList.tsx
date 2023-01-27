@@ -1,15 +1,35 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AnyAction } from "@reduxjs/toolkit";
 import LunchCard from "./LunchCard";
 import { Launch } from "../types/types";
 import { RootState } from "../Redux/store";
 import { Col, Row } from "antd";
+import SearchName from "./SearchName";
 
 const LaunchesList: React.FC = () => {
   const dispatch = useDispatch();
+  const [search, setNewSearch] = useState<string>("");
+  const handleSearch = (value: string) => {
+    setNewSearch(value);
+  };
   const { launches }: RootState = useSelector((state: RootState) => state);
 
+  // <---search--->
+  const filterSearch = !search
+    ? launches
+    : launches.filter(({ rocket: { rocket_name } }: any) =>
+        rocket_name
+          ?.split(" ")
+          .join("")
+          .toLowerCase()
+          ?.includes(search.split(" ").join("").toLowerCase())
+      );
+  // const filterSearch = launches.filter(
+  //   ({ rocket: { rocket_name } }) =>
+  //     rocket_name.toString().toLowerCase() === options.toString().toLowerCase()
+  // );
+  console.log(filterSearch);
   useEffect(() => {
     dispatch(() => {
       fetch("https://api.spacexdata.com/v3/launches")
@@ -33,6 +53,7 @@ const LaunchesList: React.FC = () => {
         >
           Click
         </button> */}
+        <SearchName options={search} handleSearch={handleSearch} />
 
         <div
           style={{
@@ -43,7 +64,7 @@ const LaunchesList: React.FC = () => {
             <LunchCard key={i} launch={launch} />
           ))} */}
           <Row gutter={[16, 16]}>
-            {launches?.map((launch: Launch, i: number) => (
+            {filterSearch?.map((launch: Launch, i: number) => (
               <Col key={i} span={6}>
                 <LunchCard launch={launch} />
               </Col>
