@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AnyAction } from "@reduxjs/toolkit";
 import LunchCard from "./LunchCard";
-import { Launch } from "../types/types";
 import { RootState } from "../Redux/store";
-import { Col, Row } from "antd";
+import { Col, DatePicker, DatePickerProps, Row } from "antd";
 import SearchName from "./SearchName";
+import { Launch } from "../types/types";
+import moment from "moment";
 
 const LaunchesList: React.FC = () => {
   const dispatch = useDispatch();
   const [search, setNewSearch] = useState<string>("");
+  const [date, setDate] = useState<string>(moment().format("WW-MM-YYYY"));
   const handleSearch = (value: string) => {
     setNewSearch(value);
   };
@@ -42,7 +44,10 @@ const LaunchesList: React.FC = () => {
         });
     });
   }, []);
-
+  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+    setDate(date, dateString);
+  };
+  console.log(moment(date).format("WW-MM-YYYY"));
   return (
     <div>
       <ul>
@@ -54,6 +59,7 @@ const LaunchesList: React.FC = () => {
           Click
         </button> */}
         <SearchName options={search} handleSearch={handleSearch} />
+        <DatePicker onChange={onChange} size={"small"} />
 
         <div
           style={{
