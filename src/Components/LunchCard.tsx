@@ -27,7 +27,7 @@ import {
   EllipsisOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Avatar, Card, Skeleton, Switch } from "antd";
+import { Avatar, Card, Skeleton, Switch, Tooltip } from "antd";
 
 const { Meta } = Card;
 interface LA {
@@ -36,6 +36,12 @@ interface LA {
     launch_site: {
       site_name_long: string;
     };
+    links: {
+      mission_patch: string;
+    };
+    mission_name: string;
+    details: string;
+    rocket: { rocket_name: string };
   };
 }
 
@@ -50,7 +56,7 @@ const LunchCard: React.FC<LA> = ({ launch }) => {
     <>
       {/* <Switch checked={!loading} onChange={onChange} /> */}
 
-      <Card style={{ width: 300, marginTop: 16 }} loading={loading}>
+      {/* <Card style={{ width: 300, marginTop: 16 }} loading={loading}>
         <Meta
           avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
           title="Card title"
@@ -77,6 +83,29 @@ const LunchCard: React.FC<LA> = ({ launch }) => {
             description="This is the description"
           />
         </Skeleton>
+      </Card> */}
+      <Card
+        hoverable
+        className="p-3"
+        style={{ width: 240 }}
+        cover={<img alt="example" src={launch?.links?.mission_patch} />}
+      >
+        <Meta title={launch?.rocket?.rocket_name} />
+        <p>Mission: {launch?.mission_name}</p>
+        <Tooltip
+          color={"volcano-inverse"}
+          placement="bottom"
+          title={launch?.details ? launch?.details : "no details"}
+        >
+          <Meta
+            description={
+              launch?.details
+                ? launch?.details.length > 20 &&
+                  launch?.details.substring(0, 30)
+                : ""
+            }
+          />{" "}
+        </Tooltip>
       </Card>
     </>
   );
