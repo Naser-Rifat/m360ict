@@ -1,6 +1,6 @@
 //store/launchesSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Launch } from "../../types/types";
+import { Launch } from "../types/types";
 import { getLaunches, getLaunch } from "../services/spaceX";
 
 interface LaunchesState {
@@ -25,10 +25,10 @@ const launchesSlice = createSlice({
 });
 export default launchesSlice;
 
-// export const fetchLaunches = () => async (dispatch) => {
-//   const launches = await getLaunches();
-//   dispatch(setLaunches(launches));
-// };
+export const fetchLaunches = () => async (dispatch: any) => {
+  const launches = await getLaunches();
+  dispatch(setLaunches(launches));
+};
 
 // export const fetchLaunch = (flight_number) => async (dispatch) => {
 //   const launch = await getLaunch(flight_number);
