@@ -6,7 +6,7 @@ interface LaunchesState {
   }
   export const store = configureStore({
   reducer: {
-    lunches:  [] as LaunchesState,
+    lunches:  [],
   },
 });
 
