@@ -2,55 +2,78 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AnyAction } from "@reduxjs/toolkit";
 import LunchCard from "./LunchCard";
-import { RootState } from "../Redux/store";
-import { Col, DatePicker, DatePickerProps, Row } from "antd";
+import { RootState, AppDispatch } from "../Redux/store";
+import { Col, DatePicker, DatePickerProps, Row, Tooltip } from "antd";
 import SearchName from "./SearchName";
 import { Launch } from "../types/types";
 import moment from "moment";
 import CustomFilterComponents from "./CustomFilterComponents";
+import { getLastMonth, getLastWeeksDate, getLastYear } from "./FilterFunction";
+import { FilterOutlined } from "@ant-design/icons";
 
 const LaunchesList: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [search, setNewSearch] = useState<string>("");
-  const [date, setDate] = useState<string>(moment().format("WW-MM-YYYY"));
-
+  const [date, setDate] = useState<string>(moment().format("DD-MM-YYYY"));
   const [selectedTag, setSelectedTag] = useState<string>("");
-  const [selectedTag2, setSelectedTag2] = useState<string>("");
-  const [selectedTag3, setSelectedTag3] = useState<string>("");
 
   const handleChange = (tag: string, checked: boolean) => {
-    checked && tag === "Last Week" && setSelectedTag(tag);
-    checked && tag === "Last Month" && setSelectedTag2(tag);
-    checked && tag === "Last Year" && setSelectedTag3(tag);
-    // const nextSelectedTags = checked
-    //   ? [...selectedTags, tag]
-    //   : selectedTags.filter((t) => t !== tag);
-    // console.log("You are interested in: ", nextSelectedTags);
-    // setSelectedTags(nextSelectedTags);
+    setSelectedTag(tag);
   };
-  console.log(selectedTag);
-  console.log(selectedTag2);
-  console.log(selectedTag3);
+  const { launches }: RootState = useSelector((state: RootState) => state);
+  const lastWeek = moment(getLastWeeksDate()).format("YYYY-MM-DD");
+  const lastMonth = moment(getLastMonth()).format("YYYY-MM-DD");
+  const lastYear = moment(getLastYear()).format("YYYY-MM-DD");
   const handleSearch = (value: string) => {
     setNewSearch(value);
   };
-  const { launches }: RootState = useSelector((state: RootState) => state);
-
+  const lastWeekFilter = launches.filter(
+    ({ rocket: { rocket_name } }: any) =>
+      rocket_name
+        ?.split(" ")
+        .join("")
+        .toLowerCase()
+        ?.includes(search?.split(" ").join("").toLowerCase()) === lastWeek
+  );
+  console.log(lastWeekFilter);
   // <---search--->
-  const filterSearch = !search
-    ? launches
-    : launches.filter(({ rocket: { rocket_name } }: any) =>
-        rocket_name
-          ?.split(" ")
-          .join("")
-          .toLowerCase()
-          ?.includes(search.split(" ").join("").toLowerCase())
-      );
-  // const filterSearch = launches.filter(
-  //   ({ rocket: { rocket_name } }) =>
-  //     rocket_name.toString().toLowerCase() === options.toString().toLowerCase()
-  // );
-  console.log(filterSearch);
+  // const filterSearch = !search
+  //   ? launches
+  //   : launches.filter(({ rocket: { rocket_name } }: any) =>
+  //       rocket_name
+  //         ?.split(" ")
+  //         .join("")
+  //         .toLowerCase()
+  //         ?.includes(search?.split(" ").join("").toLowerCase())
+  //     );
+
+  //     : selectedTag === "Last Week"
+  //   ? launches.filter(
+  //       ({ launch_date_local }) =>
+  //         moment(launch_date_local).format("YYYY-MM-DD") === lastWeek
+  //     )
+  //   : selectedTag === "Last Month"
+  //   ? launches.filter(
+  //       ({ launch_date_local }) =>
+  //         moment(launch_date_local).format("YYYY-MM-DD") === lastMonth
+  //     )
+  //   : selectedTag === "Last Year"
+  //   ? launches.filter(
+  //       ({ launch_date_local }) =>
+  //         moment(launch_date_local).format("YYYY-MM-DD") === lastYear
+  //     )
+  const filterSearch =
+    !search || !lastWeek || !lastMonth || !lastYear
+      ? launches
+      : lastWeek
+      ? lastWeekFilter
+      : launches.filter(({ rocket: { rocket_name } }: any) =>
+          rocket_name
+            ?.split(" ")
+            .join("")
+            .toLowerCase()
+            ?.includes(search?.split(" ").join("").toLowerCase())
+        );
   useEffect(() => {
     dispatch(() => {
       fetch("https://api.spacexdata.com/v3/launches")
@@ -63,45 +86,57 @@ const LaunchesList: React.FC = () => {
         });
     });
   }, []);
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-    setDate(date, dateString);
-  };
-  console.log(moment(date).format("WW-MM-YYYY"));
+
   return (
-    <div>
-      <ul>
-        {/* <button
-          onClick={() =>
-            dispatch<AnyAction>({ type: "dsdsds", payload: "sdas" })
-          }
-        >
-          Click
-        </button> */}
+    <div
+      style={{
+        padding: 10,
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: 20,
+        }}
+      >
+        {" "}
         <SearchName options={search} handleSearch={handleSearch} />
-        {/* <DatePicker onChange={onChange} size={"small"} /> */}
-        <CustomFilterComponents
-          selectedTag={selectedTag}
-          selectedTag2={selectedTag2}
-          selectedTag3={selectedTag3}
-          handleChange={handleChange}
-        />
         <div
           style={{
             display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 10,
           }}
         >
-          {/* {launches?.map((launch: Launch, i: number) => (
-            <LunchCard key={i} launch={launch} />
-          ))} */}
-          <Row gutter={[16, 16]}>
-            {filterSearch?.map((launch: Launch, i: number) => (
-              <Col key={i} span={6}>
-                <LunchCard launch={launch} />
-              </Col>
-            ))}
-          </Row>
+          <Tooltip title="Filter">
+            <FilterOutlined
+              style={{
+                color: "gray",
+                fontSize: 20,
+              }}
+            />
+          </Tooltip>
+          <CustomFilterComponents
+            selectedTag={selectedTag}
+            handleChange={handleChange}
+          />
         </div>
-      </ul>
+      </div>
+      <div
+        style={{
+          display: "flex",
+        }}
+      >
+        <Row gutter={[16, 16]}>
+          {filterSearch?.map((launch, i: number) => (
+            <Col key={i} span={6}>
+              <LunchCard launch={launch} />
+            </Col>
+          ))}
+        </Row>
+      </div>
     </div>
   );
 };

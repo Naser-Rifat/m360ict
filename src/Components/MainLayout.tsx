@@ -1,45 +1,47 @@
+// import React from "react";
+// import { Breadcrumb, Layout, Menu, theme } from "antd";
+
+// const { Header, Content, Footer } = Layout;
+// interface LAY {
+//   children: JSX.Element;
+// }
+
+// const MainLayout: React.FC<LAY> = ({ children }) => {
+//   return (
+//     <Layout className="layout">
+//       <Header
+//         style={{
+//           display: "flex",
+//           justifyContent: "space-between",
+//         }}
+//       ></Header>
+//       {children}
+//     </Layout>
+//   );
+// };
+
+import { Header } from "antd/es/layout/layout";
 import React from "react";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Outlet } from "react-router-dom";
+import SuspenseLayout from "./SuspenseLayout";
 
-const { Header, Content, Footer } = Layout;
-interface LAY {
-  children: JSX.Element;
-}
-
-const MainLayout: React.FC<LAY> = ({ children }) => {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
+export const MainLayout = () => {
   return (
-    <Layout className="layout">
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+      }}
+    >
       <Header
         style={{
           display: "flex",
           justifyContent: "space-between",
         }}
-      >
-        <span className="logo">logo</span>
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          className=""
-          defaultSelectedKeys={["2"]}
-          items={new Array(3).fill(null).map((_, index) => {
-            const key = index + 1;
-            return {
-              key,
-              label: `nav ${key}`,
-            };
-          })}
-        />
-      </Header>
-      {children}
-      {/* <Footer style={{ textAlign: "center" }}>
-        Ant Design ©2023 Created by Ant UED
-      </Footer> */}
-    </Layout>
+      ></Header>
+      <SuspenseLayout>
+        <Outlet />
+      </SuspenseLayout>
+    </div>
   );
 };
-
-export default MainLayout;

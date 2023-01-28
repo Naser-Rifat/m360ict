@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { AutoComplete, Input } from "antd";
-
-const SearchName: React.FC = ({ options, handleSearch }) => {
+interface Props {
+  options: any;
+  handleSearch: any;
+}
+const SearchName: React.FC<Props> = ({ options, handleSearch }) => {
   return (
     <AutoComplete
       //   dropdownMatchSelectWidth={252}
@@ -11,7 +14,11 @@ const SearchName: React.FC = ({ options, handleSearch }) => {
       //   onSearch={handleSearch}
       onChange={handleSearch}
     >
-      <Input.Search size="large" placeholder="input here" enterButton />
+      <Input.Search
+        size="large"
+        placeholder="Search by rocket name"
+        enterButton
+      />
     </AutoComplete>
   );
 };

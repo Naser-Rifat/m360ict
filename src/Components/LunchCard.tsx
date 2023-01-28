@@ -28,10 +28,12 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { Avatar, Card, Skeleton, Switch, Tooltip } from "antd";
+import { Link } from "react-router-dom";
 
 const { Meta } = Card;
 interface LA {
   launch: {
+    flight_number: number;
     launch_success: boolean;
     launch_site: {
       site_name_long: string;
@@ -45,7 +47,7 @@ interface LA {
   };
 }
 
-const LunchCard: React.FC<LA> = ({ launch }) => {
+const LunchCard: React.FC<LA> = ({ launch }): any => {
   const [loading, setLoading] = useState(false);
 
   const onChange = (checked: boolean) => {
@@ -84,29 +86,30 @@ const LunchCard: React.FC<LA> = ({ launch }) => {
           />
         </Skeleton>
       </Card> */}
-      <Card
-        hoverable
-        className="p-3"
-        style={{ width: 240 }}
-        cover={<img alt="example" src={launch?.links?.mission_patch} />}
+      <Tooltip
+        color={"volcano-inverse"}
+        placement="bottom"
+        title={launch?.details ? launch?.details : "no details"}
       >
-        <Meta title={launch?.rocket?.rocket_name} />
-        <p>Mission: {launch?.mission_name}</p>
-        <Tooltip
-          color={"volcano-inverse"}
-          placement="bottom"
-          title={launch?.details ? launch?.details : "no details"}
-        >
-          <Meta
-            description={
-              launch?.details
-                ? launch?.details.length > 20 &&
-                  launch?.details.substring(0, 30)
-                : ""
-            }
-          />{" "}
-        </Tooltip>
-      </Card>
+        <Link to={`singleflight/${launch.flight_number}`}>
+          <Card
+            hoverable
+            style={{ width: 240, padding: 6 }}
+            cover={<img alt="example" src={launch?.links?.mission_patch} />}
+          >
+            <Meta title={launch?.rocket?.rocket_name} />
+            <p>Mission: {launch?.mission_name}</p>
+            <Meta
+              description={
+                launch?.details
+                  ? launch?.details.length > 20 &&
+                    launch?.details.substring(0, 30)
+                  : ""
+              }
+            />{" "}
+          </Card>
+        </Link>
+      </Tooltip>
     </>
   );
 };
