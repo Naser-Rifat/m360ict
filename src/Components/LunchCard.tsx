@@ -47,45 +47,11 @@ interface LA {
   };
 }
 
-const LunchCard: React.FC<LA> = ({ launch }): any => {
+const LunchCard: React.FC<LA> = ({ launch }) => {
   const [loading, setLoading] = useState(false);
-
-  const onChange = (checked: boolean) => {
-    setLoading(!checked);
-  };
 
   return (
     <>
-      {/* <Switch checked={!loading} onChange={onChange} /> */}
-
-      {/* <Card style={{ width: 300, marginTop: 16 }} loading={loading}>
-        <Meta
-          avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-          title="Card title"
-          description="This is the description"
-        />
-        <p>
-          {launch.launch_success ? "Successful" : "Failed"} launch from{" "}
-          {launch.launch_site.site_name_long}
-        </p>
-      </Card>
-
-      <Card
-        style={{ width: 300, marginTop: 16 }}
-        actions={[
-          <SettingOutlined key="setting" />,
-          <EditOutlined key="edit" />,
-          <EllipsisOutlined key="ellipsis" />,
-        ]}
-      >
-        <Skeleton loading={loading} avatar active>
-          <Meta
-            avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-            title="Card title"
-            description="This is the description"
-          />
-        </Skeleton>
-      </Card> */}
       <Tooltip
         color={"volcano-inverse"}
         placement="bottom"
@@ -94,7 +60,10 @@ const LunchCard: React.FC<LA> = ({ launch }): any => {
         <Link to={`singleflight/${launch.flight_number}`}>
           <Card
             hoverable
-            style={{ width: 240, padding: 6 }}
+            style={{
+              width: 300,
+              padding: 6,
+            }}
             cover={<img alt="example" src={launch?.links?.mission_patch} />}
           >
             <Meta title={launch?.rocket?.rocket_name} />

@@ -6,14 +6,7 @@ interface Props {
 }
 const SearchName: React.FC<Props> = ({ options, handleSearch }) => {
   return (
-    <AutoComplete
-      //   dropdownMatchSelectWidth={252}
-      style={{ width: 300 }}
-      //   options={options}
-      //   onSelect={onSelect}
-      //   onSearch={handleSearch}
-      onChange={handleSearch}
-    >
+    <AutoComplete style={{ width: 500 }} onChange={handleSearch}>
       <Input.Search
         size="large"
         placeholder="Search by rocket name"

@@ -20,6 +20,7 @@
 //   );
 // };
 
+import { Menu } from "antd";
 import { Header } from "antd/es/layout/layout";
 import React from "react";
 import { Outlet } from "react-router-dom";
@@ -35,10 +36,35 @@ export const MainLayout = () => {
     >
       <Header
         style={{
+          padding: "0 10px",
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: "#000",
         }}
-      ></Header>
+      >
+        <div style={{}}>
+          <img
+            style={{
+              width: 150,
+            }}
+            src={"/src/assets/spacex.svg"}
+            alt=""
+          />
+        </div>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={["2"]}
+          items={new Array(1).fill(null).map((_, index) => {
+            const key = index + 1;
+            return {
+              key,
+              label: `Home`,
+            };
+          })}
+        />
+      </Header>
       <SuspenseLayout>
         <Outlet />
       </SuspenseLayout>

@@ -10,70 +10,65 @@ import moment from "moment";
 import CustomFilterComponents from "./CustomFilterComponents";
 import { getLastMonth, getLastWeeksDate, getLastYear } from "./FilterFunction";
 import { FilterOutlined } from "@ant-design/icons";
+import FilterComponent from "./FilterComponent";
 
 const LaunchesList: React.FC = () => {
+  const { launches }: RootState = useSelector((state: RootState) => state);
+  console.log(launches);
   const dispatch = useDispatch<AppDispatch>();
   const [search, setNewSearch] = useState<string>("");
-  const [date, setDate] = useState<string>(moment().format("DD-MM-YYYY"));
-  const [selectedTag, setSelectedTag] = useState<string>("");
 
+  const [selectedTag, setSelectedTag] = useState<string>("");
+  const [newFilterSearch, setNewFilterSearch] = useState(launches);
+  useEffect(() => {
+    setNewFilterSearch(launches);
+  }, [launches]);
   const handleChange = (tag: string, checked: boolean) => {
-    setSelectedTag(tag);
+    if (tag === "Last Week") {
+      const lastWeekFilter = launches.filter(
+        ({ rocket: { rocket_name } }: any) =>
+          rocket_name
+            ?.split(" ")
+            .join("")
+            .toLowerCase()
+            ?.includes(search?.split(" ").join("").toLowerCase()) === lastWeek
+      );
+      setNewFilterSearch(lastWeekFilter);
+    } else if (tag === "Last Month") {
+      setNewFilterSearch(
+        launches.filter(
+          ({ launch_date_local }) =>
+            moment(launch_date_local).format("YYYY-MM-DD") === lastMonth
+        )
+      );
+    } else if (tag === "Last Year") {
+      setNewFilterSearch(
+        launches.filter(
+          ({ launch_date_local }) =>
+            moment(launch_date_local).format("YYYY-MM-DD") === lastYear
+        )
+      );
+    } else {
+      setNewFilterSearch(launches);
+    }
   };
-  const { launches }: RootState = useSelector((state: RootState) => state);
+  console.log(newFilterSearch);
   const lastWeek = moment(getLastWeeksDate()).format("YYYY-MM-DD");
   const lastMonth = moment(getLastMonth()).format("YYYY-MM-DD");
   const lastYear = moment(getLastYear()).format("YYYY-MM-DD");
-  const handleSearch = (value: string) => {
-    setNewSearch(value);
-  };
-  const lastWeekFilter = launches.filter(
-    ({ rocket: { rocket_name } }: any) =>
-      rocket_name
-        ?.split(" ")
-        .join("")
-        .toLowerCase()
-        ?.includes(search?.split(" ").join("").toLowerCase()) === lastWeek
-  );
-  console.log(lastWeekFilter);
-  // <---search--->
-  // const filterSearch = !search
-  //   ? launches
-  //   : launches.filter(({ rocket: { rocket_name } }: any) =>
-  //       rocket_name
-  //         ?.split(" ")
-  //         .join("")
-  //         .toLowerCase()
-  //         ?.includes(search?.split(" ").join("").toLowerCase())
-  //     );
-
-  //     : selectedTag === "Last Week"
-  //   ? launches.filter(
-  //       ({ launch_date_local }) =>
-  //         moment(launch_date_local).format("YYYY-MM-DD") === lastWeek
-  //     )
-  //   : selectedTag === "Last Month"
-  //   ? launches.filter(
-  //       ({ launch_date_local }) =>
-  //         moment(launch_date_local).format("YYYY-MM-DD") === lastMonth
-  //     )
-  //   : selectedTag === "Last Year"
-  //   ? launches.filter(
-  //       ({ launch_date_local }) =>
-  //         moment(launch_date_local).format("YYYY-MM-DD") === lastYear
-  //     )
-  const filterSearch =
-    !search || !lastWeek || !lastMonth || !lastYear
+  const handleSearch = (valSearch: string) => {
+    const filterSearch = !valSearch
       ? launches
-      : lastWeek
-      ? lastWeekFilter
       : launches.filter(({ rocket: { rocket_name } }: any) =>
           rocket_name
             ?.split(" ")
             .join("")
             .toLowerCase()
-            ?.includes(search?.split(" ").join("").toLowerCase())
+            ?.includes(valSearch?.split(" ").join("").toLowerCase())
         );
+    setNewFilterSearch(filterSearch);
+  };
+
   useEffect(() => {
     dispatch(() => {
       fetch("https://api.spacexdata.com/v3/launches")
@@ -95,47 +90,42 @@ const LaunchesList: React.FC = () => {
     >
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: 20,
+          marginTop: 30,
+          marginBottom: 50,
         }}
       >
-        {" "}
-        <SearchName options={search} handleSearch={handleSearch} />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <Tooltip title="Filter">
-            <FilterOutlined
-              style={{
-                color: "gray",
-                fontSize: 20,
-              }}
-            />
-          </Tooltip>
-          <CustomFilterComponents
-            selectedTag={selectedTag}
-            handleChange={handleChange}
-          />
-        </div>
+        <FilterComponent
+          selectedTag={selectedTag}
+          handleChange={handleChange}
+          search={search}
+          handleSearch={handleSearch}
+        />
       </div>
-      <div
-        style={{
-          display: "flex",
-        }}
-      >
-        <Row gutter={[16, 16]}>
-          {filterSearch?.map((launch, i: number) => (
-            <Col key={i} span={6}>
-              <LunchCard launch={launch} />
-            </Col>
-          ))}
-        </Row>
+      <div>
+        {newFilterSearch.length ? (
+          <Row gutter={[16, 16]}>
+            {newFilterSearch?.map((launch, i: number) => (
+              <Col
+                style={{ display: "flex", justifyContent: "center" }}
+                key={i}
+                span={6}
+              >
+                <LunchCard launch={launch} />
+              </Col>
+            ))}
+          </Row>
+        ) : (
+          <div
+            style={{
+              height: "100vh",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            No data Found
+          </div>
+        )}
       </div>
     </div>
   );

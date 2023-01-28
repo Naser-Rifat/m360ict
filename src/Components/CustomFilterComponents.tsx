@@ -3,7 +3,6 @@ import { Space, Tag } from "antd";
 
 const { CheckableTag } = Tag;
 
-const tagsData = ["Last Week", "Last Month", "Last Year"];
 interface Props {
   selectedTag: any;
   handleChange: any;
@@ -16,7 +15,6 @@ const CustomFilterComponents: React.FC<Props> = ({
   return (
     <>
       <Space size={[0, 8]} wrap>
-        {/* {tagsData.map((tag) => ( */}
         <CheckableTag
           style={{
             border: "1px solid gray",
@@ -44,7 +42,6 @@ const CustomFilterComponents: React.FC<Props> = ({
         >
           Last Year
         </CheckableTag>
-        {/* ))} */}
       </Space>
     </>
   );
