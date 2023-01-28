@@ -7,6 +7,6 @@
     -yarn add @reduxjs/toolkit 
     -yarn add axios
     -yarn add react-router-dom
-## Step 3:(UI library and icon packaged installed)
+## Step 3:(UI library and icon package installed)
     -yarn add antd
     -yarn add --save @ant-design/icons
