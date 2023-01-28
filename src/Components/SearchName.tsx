@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { AutoComplete, Input } from "antd";
 
 const SearchName: React.FC = ({ options, handleSearch }) => {
-  console.log(options?.split(" ").join("").toLowerCase());
   return (
     <AutoComplete
       //   dropdownMatchSelectWidth={252}

@@ -7,11 +7,30 @@ import { Col, DatePicker, DatePickerProps, Row } from "antd";
 import SearchName from "./SearchName";
 import { Launch } from "../types/types";
 import moment from "moment";
+import CustomFilterComponents from "./CustomFilterComponents";
 
 const LaunchesList: React.FC = () => {
   const dispatch = useDispatch();
   const [search, setNewSearch] = useState<string>("");
   const [date, setDate] = useState<string>(moment().format("WW-MM-YYYY"));
+
+  const [selectedTag, setSelectedTag] = useState<string>("");
+  const [selectedTag2, setSelectedTag2] = useState<string>("");
+  const [selectedTag3, setSelectedTag3] = useState<string>("");
+
+  const handleChange = (tag: string, checked: boolean) => {
+    checked && tag === "Last Week" && setSelectedTag(tag);
+    checked && tag === "Last Month" && setSelectedTag2(tag);
+    checked && tag === "Last Year" && setSelectedTag3(tag);
+    // const nextSelectedTags = checked
+    //   ? [...selectedTags, tag]
+    //   : selectedTags.filter((t) => t !== tag);
+    // console.log("You are interested in: ", nextSelectedTags);
+    // setSelectedTags(nextSelectedTags);
+  };
+  console.log(selectedTag);
+  console.log(selectedTag2);
+  console.log(selectedTag3);
   const handleSearch = (value: string) => {
     setNewSearch(value);
   };
@@ -59,8 +78,13 @@ const LaunchesList: React.FC = () => {
           Click
         </button> */}
         <SearchName options={search} handleSearch={handleSearch} />
-        <DatePicker onChange={onChange} size={"small"} />
-
+        {/* <DatePicker onChange={onChange} size={"small"} /> */}
+        <CustomFilterComponents
+          selectedTag={selectedTag}
+          selectedTag2={selectedTag2}
+          selectedTag3={selectedTag3}
+          handleChange={handleChange}
+        />
         <div
           style={{
             display: "flex",
