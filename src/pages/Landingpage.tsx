@@ -1,4 +1,3 @@
-import React from "react";
 import LaunchesList from "../Components/LaunchesList";
 
 const LandingPage = () => {

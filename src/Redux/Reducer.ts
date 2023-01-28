@@ -5,8 +5,6 @@ const INITIAL_STATE = {
   flight: {},
 };
 export const reducer = (state = INITIAL_STATE, action: any) => {
-  console.log(typeof action.payload);
-  console.log(action.payload);
   switch (action.type) {
     case FETCH_SUCCESS:
       return {

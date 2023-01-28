@@ -90,7 +90,7 @@ const LaunchesList: React.FC = () => {
     >
       <div
         style={{
-          marginTop: 30,
+          marginTop: 0,
           marginBottom: 50,
         }}
       >
